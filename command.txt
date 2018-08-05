@@ -1,0 +1,106 @@
+git clone https://github.com/quixcoin/quix.git
+mv quix LPL
+cd LPL
+find . -type f -print0 | xargs -0 sed -i 's/lightpaycoin/lightexcoin/g'
+find . -type f -print0 | xargs -0 sed -i 's/LightPayCoin/LightTexCoin/g'
+find . -type f -print0 | xargs -0 sed -i 's/Lightpaycoin/Lightexcoin/g'
+find . -type f -print0 | xargs -0 sed -i 's/LIGHTPAYCOIN/LIGHTEXCOIN/g'
+find . -type f -print0 | xargs -0 sed -i 's/LPC/XLT/g'
+find . -type f -print0 | xargs -0 sed -i 's/lpc/xlt/g'
+find . -type f -print0 | xargs -0 sed -i 's/Lpc/Xlt/g'
+apt install rename
+find . -exec rename 's/lightpaycoin/lightexcoin/' {} ";"
+find . -exec rename 's/lpc/xlt/' {} ";"
+find . -exec rename 's/LPC/TEST/' {} ";"
+find . -exec rename 's/Quixcoin/LPLcoin/' {} ";"
+find . -exec rename 's/QuixCoin/LPLcoin/' {} ";"
+find . -type f -print0 | xargs -0 sed -i 's/39797/33796/g'
+find . -type f -print0 | xargs -0 sed -i 's/39798/33798/g'
+
+chmod 777 autogen.sh
+chmod 777 ./share/genbuild.sh
+./autogen.sh;./configure;make
+ 
+cd;mkdir son;cd son
+openssl ecparam -genkey -name secp256k1 -out alertkey.pem
+openssl ec -in alertkey.pem -text > alertkey.hex
+openssl ecparam -genkey -name secp256k1 -out testnetalert.pem
+openssl ec -in testnetalert.pem -text > testnetalert.hex
+openssl ecparam -genkey -name secp256k1 -out genesiscoinbase.pem
+openssl ec -in testnetalert.pem -text > genesiscoinbase.hex
+cat alertkey.hex
+cat testnetalert.hex
+ 
+https://github.com/lhartikk/GenesisH0
+
+//litecoin
+if (true && genesis.GetHash() != hashGenesisBlock)
+        {
+            printf("Searching for genesis block...\n");
+            // This will figure out a valid hash and Nonce if you're
+            // creating a different genesis block:
+            uint256 hashTarget = CBigNum().SetCompact(block.nBits).getuint256();
+            uint256 thash;
+            char scratchpad[SCRYPT_SCRATCHPAD_SIZE];
+            loop
+            {
+#if defined(USE_SSE2)
+                // Detection would work, but in cases where we KNOW it always has SSE2,
+                // it is faster to use directly than to use a function pointer or conditional.
+#if defined(_M_X64) || defined(__x86_64__) || defined(_M_AMD64) || (defined(MAC_OSX) && defined(__i386__))
+                // Always SSE2: x86_64 or Intel MacOS X
+                scrypt_1024_1_1_256_sp_sse2(BEGIN(genesis.nVersion), BEGIN(thash), scratchpad);
+#else
+                // Detect SSE2: 32bit x86 Linux or Windows
+                scrypt_1024_1_1_256_sp(BEGIN(genesis.nVersion), BEGIN(thash), scratchpad);
+#endif
+#else
+                // Generic scrypt
+                scrypt_1024_1_1_256_sp_generic(BEGIN(genesis.nVersion), BEGIN(thash), scratchpad);
+#endif
+                if (thash <= hashTarget)
+                    break;
+                if ((genesis.nNonce & 0xFFF) == 0)
+                {
+                    printf("nonce %08X: hash = %s (target = %s)\n", genesis.nNonce, thash.ToString().c_str(), hashTarget.ToString().c_str());
+                }
+                ++genesis.nNonce;
+                if (genesis.nNonce == 0)
+                {
+                    printf("NONCE WRAPPED, incrementing time\n");
+                    ++genesis.nTime;
+                }
+            }
+            printf("genesis.nTime = %u \n", genesis.nTime);
+            printf("genesis.nNonce = %u \n", genesis.nNonce);
+            printf("genesis.GetHash = %s\n", genesis.GetHash().ToString().c_str());
+        }
+//quix coin
+        #include "arith_uint256.h"
+	#include <string> 
+        printf("Genesis mining started\n");
+        genesis.nNonce = 0;
+        consensus.hashGenesisBlock = uint256S("0x001");
+        for(genesis.nNonce == 0; UintToArith256(genesis.GetHash()) > UintToArith256(consensus.powLimit); genesis.nNonce++){};
+        printf("New genesis merkle root: %s\n", genesis.hashMerkleRoot.ToString().c_str());
+        printf("New genesis nonce: %lu\n", (unsigned long)genesis.nNonce);
+        printf("New genesis hash: %s\n", genesis.GetHash().ToString().c_str());
+        printf("Now replace the values, reComment the Genesis mining code and reCompile. \n");
+//bulwark	
+	printf("Genesis mining started\n");
+        genesis.nNonce = 0;
+        hashGenesisBlock = uint256("0x001");
+        for(genesis.nNonce == 0; uint256(genesis.GetHash()) > bnProofOfWorkLimit; genesis.nNonce++){};
+        printf("New genesis merkle root: %s\n", genesis.hashMerkleRoot.ToString().c_str());
+        printf("New genesis nonce: %lu\n", (unsigned long)genesis.nNonce);
+        printf("New genesis hash: %s\n", genesis.GetHash().ToString().c_str());
+        printf("Now replace the values, reComment the Genesis mining code and reCompile. \n");
+//make chainpramsseeds.h
+	sudo apt-get install python3-dnspython	
+	curl -s http://seeder.fuzzbawls.pw/milkcoin-mainnet.txt > seeds_main.txt
+  	python3 makeseeds.py < seeds_main.txt > nodes_main.txt
+    	python3 generate-seeds.py . > ../../src/chainparamsseeds.h
+
+New genesis merkle root: 07391e8a4dd2784f8d1723b7ea31b3c0d89a3d51423aab8e3ebb3998c4507979
+New genesis nonce: 2981647
+New genesis hash: 0000041632a539ff8be72383f79ac279315d1877e20283487d8c0866ab71fb67
